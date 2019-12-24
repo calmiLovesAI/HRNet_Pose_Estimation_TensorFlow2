@@ -212,8 +212,6 @@ class HRNet(tf.keras.Model):
                 feature_list.append(self.transition1[i](x, training=training))
             else:
                 feature_list.append(x)
-        for _ in feature_list:
-            print(type(_))
         y_list = self.stage2(feature_list, training=training)
 
         feature_list = []
