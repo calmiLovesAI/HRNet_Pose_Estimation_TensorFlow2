@@ -100,6 +100,18 @@ class HighResolutionModule(tf.keras.layers.Layer):
         return x_fusion
 
 
+class StackLayers(tf.keras.layers.Layer):
+    def __init__(self, layers):
+        super(StackLayers, self).__init__()
+        self.layers = layers
+
+    def call(self, inputs, training=None, **kwargs):
+        x = inputs
+        for layer in self.layers:
+            x = layer(x, training=training)
+        return x
+
+
 class HRNet(tf.keras.Model):
     def __init__(self, config_name):
         super(HRNet, self).__init__()
@@ -129,9 +141,6 @@ class HRNet(tf.keras.Model):
                                             strides=1,
                                             padding="same")
 
-
-
-
     def __choose_config(self, config_name):
         if config_name == "coco_w32_256x192":
             config_params = CocoW32Size256x192()
@@ -148,6 +157,7 @@ class HRNet(tf.keras.Model):
                 reset_multi_scale_output = False
             else:
                 reset_multi_scale_output = True
+
             module_list.append(HighResolutionModule(num_branches=num_branches,
                                                     num_in_channels=in_channels,
                                                     num_channels=channels,
@@ -155,7 +165,7 @@ class HRNet(tf.keras.Model):
                                                     num_blocks=num_blocks,
                                                     fusion_method=fusion_method,
                                                     multi_scale_output=reset_multi_scale_output))
-        return tf.keras.Sequential(module_list)
+        return StackLayers(layers=module_list)
 
     def __make_transition_layer(self, previous_branches_num, previous_channels, current_branches_num, current_channels):
         transition_layers = []
