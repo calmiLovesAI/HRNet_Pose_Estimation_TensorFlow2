@@ -1,6 +1,6 @@
 import tensorflow as tf
 from core.resnet_module import make_bottleneck_layer, make_basic_layer
-from configuration.coco_config.w32_256x192_config import CocoW32Size256x192
+from utils.parse_config import get_config_params
 
 
 class HighResolutionModule(tf.keras.layers.Layer):
@@ -142,11 +142,7 @@ class HRNet(tf.keras.Model):
                                             padding="same")
 
     def __choose_config(self, config_name):
-        if config_name == "coco_w32_256x192":
-            config_params = CocoW32Size256x192()
-            return config_params
-        else:
-            raise ValueError("Invalid config_name.")
+        return get_config_params(config_name)
 
     def __make_stages(self, stage_name, in_channels, multi_scale_output=True):
         stage_info = self.config_params.get_stage(stage_name)

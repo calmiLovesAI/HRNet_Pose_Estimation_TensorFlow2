@@ -37,5 +37,12 @@ class StageParams:
 
 
 class Config:
+    TRAINING_CONFIG_NAME = "coco_w32_256x192"
+    # input image
+    IMAGE_HEIGHT = 256
+    IMAGE_WIDTH = 256
+    CHANNELS = 3
+
+
     def __init__(self):
         pass
