@@ -1,5 +1,5 @@
 
-class StageParams:
+class StageParams(object):
     def __init__(self, channels, modules, block, num_blocks, fusion_method):
         self.channels = channels
         self.modules = modules
@@ -36,7 +36,7 @@ class StageParams:
         return self.fusion_method
 
 
-class Config:
+class Config(object):
     TRAINING_CONFIG_NAME = "coco_w32_256x192"
     # input image
     IMAGE_HEIGHT = 256
