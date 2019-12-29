@@ -43,6 +43,11 @@ class Config(object):
     IMAGE_WIDTH = 256
     CHANNELS = 3
 
+    # dataset
+    COCO_ROOT_DIR = "./dataset/COCO/2017/"
+    COCO_TRAIN_TXT = "./coco_train.txt"
+    COCO_VALID_TXT = "./coco_valid.txt"
+
 
     def __init__(self):
         pass
