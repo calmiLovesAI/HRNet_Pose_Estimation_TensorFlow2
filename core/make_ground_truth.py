@@ -44,11 +44,11 @@ class GroundTruth(object):
         num_of_joints = keypoints_tensor.shape[0]
         for i in range(num_of_joints):
             keypoints_3d_list.append(tf.convert_to_tensor([keypoints_tensor[i, 0], keypoints_tensor[i, 1], 0], dtype=tf.dtypes.float32))
-
             exist_value = keypoints_tensor[i, 2]
             if exist_value > 1:
                 exist_value = 1
             keypoints_3d_exist_list.append(tf.convert_to_tensor([exist_value, exist_value, 0], dtype=tf.dtypes.float32))
+        
         keypoints_3d = tf.stack(values=keypoints_3d_list, axis=0)
         keypoints_3d_exist = tf.stack(values=keypoints_3d_exist_list, axis=0)
         return keypoints_3d, keypoints_3d_exist
