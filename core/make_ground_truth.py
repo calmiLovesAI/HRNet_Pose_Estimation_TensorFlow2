@@ -4,7 +4,6 @@ import tensorflow as tf
 class GroundTruth(object):
     def __init__(self, batch_keypoints_info):
         self.batch_keypoints_list = self.__tensor2list(batch_keypoints_info)
-        # print(self.batch_keypoints_list)
 
     def __tensor2list(self, tensor_data):
         list_data = []
@@ -38,21 +37,18 @@ class GroundTruth(object):
         keypoints_tensor = tf.convert_to_tensor(value=keypoints, dtype=tf.dtypes.float32)
         keypoints_tensor = tf.reshape(keypoints_tensor, shape=(-1, 3))
         keypoints_3d, keypoints_3d_exist = self.__get_keypoints_3d(keypoints_tensor)
-        # print("keypoints_3d :")
-        # print(keypoints_3d)
 
     def __get_keypoints_3d(self, keypoints_tensor):
-        keypoints_3d = tf.zeros_like(keypoints_tensor, dtype=tf.dtypes.float32)
-        keypoints_3d_exist = tf.zeros_like(keypoints_tensor, dtype=tf.dtypes.float32)
+        keypoints_3d_list = []
+        keypoints_3d_exist_list = []
         num_of_joints = keypoints_tensor.shape[0]
         for i in range(num_of_joints):
-            keypoints_3d[i, 0] = keypoints_tensor[i, 0]
-            keypoints_3d[i, 1] = keypoints_tensor[i, 1]
-            keypoints_3d[i, 2] = 0
+            keypoints_3d_list.append(tf.convert_to_tensor([keypoints_tensor[i, 0], keypoints_tensor[i, 1], 0], dtype=tf.dtypes.float32))
+
             exist_value = keypoints_tensor[i, 2]
             if exist_value > 1:
                 exist_value = 1
-            keypoints_3d_exist[i, 0] = exist_value
-            keypoints_3d_exist[i, 1] = exist_value
-            keypoints_3d_exist[i, 2] = 0
+            keypoints_3d_exist_list.append(tf.convert_to_tensor([exist_value, exist_value, 0], dtype=tf.dtypes.float32))
+        keypoints_3d = tf.stack(values=keypoints_3d_list, axis=0)
+        keypoints_3d_exist = tf.stack(values=keypoints_3d_exist_list, axis=0)
         return keypoints_3d, keypoints_3d_exist
