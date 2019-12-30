@@ -85,6 +85,19 @@ class COCO_keypoints(object):
             str_result += " "
         return str_result.strip()
 
+    # One line of txt: xxx.jpg height width xmin ymin w h x1 y1 v1 x2 y2 v2 ... x17 y17 v17
+    # xxx.jpg：The name of the picture to which the keypoints of the human body belong.
+    # height: The height of the picture.
+    # width: The width of the picture.
+    # xmin: The x coordinate of the upper-left corner of the bounding box.
+    # ymin: The y coordinate of the upper-left corner of the bounding box.
+    # w: The width of the bounding box.
+    # h: The height of the bounding box.
+    # xi (i = 1,...,17): The x coordinate of the keypoint.
+    # yi (i = 1,...,17): The y coordinate of the keypoint.
+    # vi (i = 1,...,17): When vi is 0, it means that this key point is not marked,
+    # when vi is 1, it means that this key point is marked but not visible,
+    # when vi is 2, it means that this key point is marked and also visible.
     def write_information_to_txt(self, dataset):
         if dataset == "train":
             data_dict = self.train_dict
