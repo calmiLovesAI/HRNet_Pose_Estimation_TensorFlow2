@@ -12,6 +12,7 @@ from configuration.base_config import Config
 class COCO_keypoints(object):
     def __init__(self):
         self.annotation = Config.COCO_ROOT_DIR + "annotations/"
+        self.images_dir = Config.COCO_ROOT_DIR + "train2017/"
         self.train_annotation = Path(self.annotation + "person_keypoints_train2017.json")
         self.valid_annotation = Path(self.annotation + "person_keypoints_val2017.json")
         start_time = time.time()
@@ -57,20 +58,6 @@ class COCO_keypoints(object):
             bbox_list.append(annotation["bbox"])
         return keypoints_list, image_id_list, bbox_list
 
-    # def __parse_keypoints(self, keypoints):
-    #     n_keypoints = len(keypoints) / 3
-    #     x_list = []
-    #     y_list = []
-    #     v_list = []
-    #     for i in range(int(n_keypoints)):
-    #         x = keypoints[i*3]
-    #         y = keypoints[i*3+1]
-    #         v = keypoints[i*3+2]
-    #         if v > 0:
-    #             x_list.append(x)
-    #             y_list.append(y)
-    #             v_list.append(v)
-    #     return x_list, y_list, v_list
 
     def __creat_dict_from_list(self, list_data):
         created_dict = {}
@@ -84,9 +71,12 @@ class COCO_keypoints(object):
             str_result += str(i)
             str_result += " "
         return str_result.strip()
+    
+    def __get_the_path_of_picture(self, picture_name):
+        return self.images_dir + picture_name
 
     # One line of txt: xxx.jpg height width xmin ymin w h x1 y1 v1 x2 y2 v2 ... x17 y17 v17
-    # xxx.jpg：The name of the picture to which the keypoints of the human body belong.
+    # xxx.jpg：The path of the picture to which the keypoints of the human body belong.
     # height: The height of the picture.
     # width: The width of the picture.
     # xmin: The x coordinate of the upper-left corner of the bounding box.
@@ -114,7 +104,7 @@ class COCO_keypoints(object):
             for i in range(len(image_ids_from_keypoints)):
                 one_human_instance_info = ""
                 image_index = image_id_dict[image_ids_from_keypoints[i]]
-                one_human_instance_info += image_files[image_index] + " "
+                one_human_instance_info += self.__get_the_path_of_picture(image_files[image_index]) + " "
                 one_human_instance_info += str(image_heights[image_index]) + " "
                 one_human_instance_info += str(image_widths[image_index]) + " "
                 one_human_instance_info += self.__list_to_str(bboxes[i]) + " "

@@ -28,22 +28,30 @@ class GroundTruth(object):
         return float_list, int_list
 
     def get_ground_truth(self):
+        batch_target = []
+        batch_target_weight = []
+        batch_images = []
         for item in self.batch_keypoints_list:
-            _, _, _, _, keypoints_3d, keypoints_3d_exist = self.__get_one_human_instance_keypoints(line_keypoints=item)
+            image_name, image_height, image_width, bbox, keypoints_3d, keypoints_3d_exist = \
+                self.__get_one_human_instance_keypoints(line_keypoints=item)
+            self.__random_crop_image(image_name, image_height, image_width, bbox)
             target, target_weight = self.__generate_target(keypoints_3d.numpy(), keypoints_3d_exist.numpy())
 
     def __get_one_human_instance_keypoints(self, line_keypoints):
         line_keypoints = line_keypoints.strip()
         split_line = line_keypoints.split(" ")
         image_name = split_line[0]
-        image_height = split_line[1]
-        image_width = split_line[2]
+        image_height = int(float(split_line[1]))
+        image_width = int(float(split_line[2]))
         _, bbox = self.__convert_string_to_float_and_int(split_line[3:7])
         keypoints, _ = self.__convert_string_to_float_and_int(split_line[7:])
         keypoints_tensor = tf.convert_to_tensor(value=keypoints, dtype=tf.dtypes.float32)
         keypoints_tensor = tf.reshape(keypoints_tensor, shape=(-1, 3))
         keypoints_3d, keypoints_3d_exist = self.__get_keypoints_3d(keypoints_tensor)
         return image_name, image_height, image_width, bbox, keypoints_3d, keypoints_3d_exist
+
+    def __random_crop_image(self, image_name, image_height, image_width, bbox):
+        pass
 
     def __get_keypoints_3d(self, keypoints_tensor):
         keypoints_3d_list = []
