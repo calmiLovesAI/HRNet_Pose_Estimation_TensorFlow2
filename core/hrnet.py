@@ -1,6 +1,6 @@
 import tensorflow as tf
 from core.resnet_module import make_bottleneck_layer, make_basic_layer
-from utils.parse_config import get_config_params
+from utils.tools import get_config_params
 
 
 class HighResolutionModule(tf.keras.layers.Layer):

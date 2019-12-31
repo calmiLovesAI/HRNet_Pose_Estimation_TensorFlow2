@@ -1,9 +1,11 @@
 import tensorflow as tf
 import numpy as np
+from utils.tools import read_image
 
 
 class GroundTruth(object):
     def __init__(self, config_params, batch_keypoints_info):
+        self.config_params = config_params
         self.batch_keypoints_list = self.__tensor2list(batch_keypoints_info)
         self.num_of_joints = config_params.num_of_joints
         self.image_size = np.array([config_params.IMAGE_HEIGHT, config_params.IMAGE_WIDTH])
@@ -32,15 +34,15 @@ class GroundTruth(object):
         batch_target_weight = []
         batch_images = []
         for item in self.batch_keypoints_list:
-            image_name, image_height, image_width, bbox, keypoints_3d, keypoints_3d_exist = \
+            image_file, image_height, image_width, bbox, keypoints_3d, keypoints_3d_exist = \
                 self.__get_one_human_instance_keypoints(line_keypoints=item)
-            self.__random_crop_image(image_name, image_height, image_width, bbox)
+            self.__random_crop_image(image_file, image_height, image_width, bbox)
             target, target_weight = self.__generate_target(keypoints_3d.numpy(), keypoints_3d_exist.numpy())
 
     def __get_one_human_instance_keypoints(self, line_keypoints):
         line_keypoints = line_keypoints.strip()
         split_line = line_keypoints.split(" ")
-        image_name = split_line[0]
+        image_file = split_line[0]
         image_height = int(float(split_line[1]))
         image_width = int(float(split_line[2]))
         _, bbox = self.__convert_string_to_float_and_int(split_line[3:7])
@@ -48,10 +50,15 @@ class GroundTruth(object):
         keypoints_tensor = tf.convert_to_tensor(value=keypoints, dtype=tf.dtypes.float32)
         keypoints_tensor = tf.reshape(keypoints_tensor, shape=(-1, 3))
         keypoints_3d, keypoints_3d_exist = self.__get_keypoints_3d(keypoints_tensor)
-        return image_name, image_height, image_width, bbox, keypoints_3d, keypoints_3d_exist
+        return image_file, image_height, image_width, bbox, keypoints_3d, keypoints_3d_exist
 
-    def __random_crop_image(self, image_name, image_height, image_width, bbox):
-        pass
+    def __random_crop_image(self, image_file, image_height, image_width, bbox):
+        image_tensor = read_image(image_file, self.config_params)
+        image_human_instance = tf.image.crop_to_bounding_box(image=image_tensor,
+                                                             offset_height=bbox[1],
+                                                             offset_width=bbox[0],
+                                                             target_height=bbox[3],
+                                                             target_width=bbox[2])
 
     def __get_keypoints_3d(self, keypoints_tensor):
         keypoints_3d_list = []
