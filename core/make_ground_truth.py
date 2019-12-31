@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from utils.tools import read_image
+from utils.tools import read_image, random_crop_and_resize_image
 
 
 class GroundTruth(object):
@@ -34,9 +34,7 @@ class GroundTruth(object):
         batch_target_weight = []
         batch_images = []
         for item in self.batch_keypoints_list:
-            image_file, image_height, image_width, bbox, keypoints_3d, keypoints_3d_exist = \
-                self.__get_one_human_instance_keypoints(line_keypoints=item)
-            self.__random_crop_image(image_file, image_height, image_width, bbox)
+            image, keypoints_3d, keypoints_3d_exist = self.__get_one_human_instance_keypoints(line_keypoints=item)
             target, target_weight = self.__generate_target(keypoints_3d.numpy(), keypoints_3d_exist.numpy())
 
     def __get_one_human_instance_keypoints(self, line_keypoints):
@@ -47,18 +45,19 @@ class GroundTruth(object):
         image_width = int(float(split_line[2]))
         _, bbox = self.__convert_string_to_float_and_int(split_line[3:7])
         keypoints, _ = self.__convert_string_to_float_and_int(split_line[7:])
+
+        image_tensor, keypoints = self.__image_and_keypoints_process(image_file, keypoints, bbox)
         keypoints_tensor = tf.convert_to_tensor(value=keypoints, dtype=tf.dtypes.float32)
         keypoints_tensor = tf.reshape(keypoints_tensor, shape=(-1, 3))
         keypoints_3d, keypoints_3d_exist = self.__get_keypoints_3d(keypoints_tensor)
-        return image_file, image_height, image_width, bbox, keypoints_3d, keypoints_3d_exist
+        return image_tensor, keypoints_3d, keypoints_3d_exist
 
-    def __random_crop_image(self, image_file, image_height, image_width, bbox):
-        image_tensor = read_image(image_file, self.config_params)
-        image_human_instance = tf.image.crop_to_bounding_box(image=image_tensor,
-                                                             offset_height=bbox[1],
-                                                             offset_width=bbox[0],
-                                                             target_height=bbox[3],
-                                                             target_width=bbox[2])
+    def __image_and_keypoints_process(self, image_dir, keypoints, bbox):
+        image_tensor = read_image(image_dir, self.config_params)
+        resized_image, resize_ratio, crop_rect = random_crop_and_resize_image(image_tensor, bbox, self.image_size[0], self.image_size[1])
+
+        return image_tensor, keypoints
+
 
     def __get_keypoints_3d(self, keypoints_tensor):
         keypoints_3d_list = []
