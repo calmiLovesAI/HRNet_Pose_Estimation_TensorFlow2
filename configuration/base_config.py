@@ -40,17 +40,22 @@ class Config(object):
     BATCH_SIZE = 8
     EPOCHS = 50
     TRAINING_CONFIG_NAME = "coco_w32_256x192"
+
     # input image
     IMAGE_HEIGHT = 256
     IMAGE_WIDTH = 256
     CHANNELS = 3
+
+    # heatmap
     HEATMAP_WIDTH = 64
     HEATMAP_HEIGHT = 64
+    SIGMA = 2
 
     # dataset
     COCO_ROOT_DIR = "./dataset/COCO/2017/"
     COCO_TRAIN_TXT = "./coco_train.txt"
     COCO_VALID_TXT = "./coco_valid.txt"
+
 
 
 
