@@ -48,8 +48,8 @@ class GroundTruth(object):
         line_keypoints = line_keypoints.strip()
         split_line = line_keypoints.split(" ")
         image_file = split_line[0]
-        image_height = int(float(split_line[1]))
-        image_width = int(float(split_line[2]))
+        # image_height = int(float(split_line[1]))
+        # image_width = int(float(split_line[2]))
         _, bbox = self.__convert_string_to_float_and_int(split_line[3:7])
         keypoints, _ = self.__convert_string_to_float_and_int(split_line[7:])
         keypoints_tensor = tf.convert_to_tensor(value=keypoints, dtype=tf.dtypes.float32)
