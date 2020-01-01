@@ -56,6 +56,9 @@ class Config(object):
     COCO_TRAIN_TXT = "./coco_train.txt"
     COCO_VALID_TXT = "./coco_valid.txt"
 
+    # save model
+    save_weights_dir = "saved_model/weights/"
+
 
 
 

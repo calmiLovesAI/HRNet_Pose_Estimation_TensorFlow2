@@ -1,4 +1,3 @@
-import tensorflow as tf
 from core.hrnet import HRNet
 from configuration.base_config import Config
 from utils.tools import get_config_params
@@ -14,6 +13,3 @@ def print_model_summary(network):
     network.build(input_shape=(None, config_params.IMAGE_HEIGHT, config_params.IMAGE_WIDTH, config_params.CHANNELS))
     network.summary()
 
-
-def training_pipeline():
-    pass

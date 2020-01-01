@@ -5,4 +5,5 @@ __pycache__
 !/dataset/README.md
 coco_train.txt
 coco_valid.txt
-test.py
+/saved_model/
+!/saved_model/weights/README.md
