@@ -113,9 +113,9 @@ class StackLayers(tf.keras.layers.Layer):
 
 
 class HRNet(tf.keras.Model):
-    def __init__(self, config_name):
+    def __init__(self, config):
         super(HRNet, self).__init__()
-        self.config_params = self.__choose_config(config_name)
+        self.config_params = config
         self.conv1 = tf.keras.layers.Conv2D(filters=64, kernel_size=(3, 3), strides=2, padding="same", use_bias=False)
         self.bn1 = tf.keras.layers.BatchNormalization(momentum=0.1, epsilon=1e-5)
         self.conv2 = tf.keras.layers.Conv2D(filters=64, kernel_size=(3, 3), strides=2, padding="same", use_bias=False)
@@ -141,8 +141,8 @@ class HRNet(tf.keras.Model):
                                             strides=1,
                                             padding="same")
 
-    def __choose_config(self, config_name):
-        return get_config_params(config_name)
+    # def __choose_config(self, config_name):
+    #     return get_config_params(config_name)
 
     def __make_stages(self, stage_name, in_channels, multi_scale_output=True):
         stage_info = self.config_params.get_stage(stage_name)

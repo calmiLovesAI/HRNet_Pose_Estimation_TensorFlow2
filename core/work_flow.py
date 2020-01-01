@@ -4,8 +4,8 @@ from configuration.base_config import Config
 from utils.tools import get_config_params
 
 
-def get_model(cfg_name):
-    model = HRNet(config_name=cfg_name)
+def get_model(cfg):
+    model = HRNet(cfg)
     return model
 
 
