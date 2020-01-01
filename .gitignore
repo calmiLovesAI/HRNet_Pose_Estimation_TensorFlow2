@@ -5,5 +5,5 @@ __pycache__
 !/dataset/README.md
 coco_train.txt
 coco_valid.txt
-/saved_model/*
+/saved_model/weights/*
 !/saved_model/weights/README.md
