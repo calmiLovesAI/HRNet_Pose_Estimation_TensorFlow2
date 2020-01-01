@@ -1,7 +1,7 @@
 .idea
 __pycache__
 /test/
-/dataset/
+/dataset/*
 !/dataset/README.md
 coco_train.txt
 coco_valid.txt
