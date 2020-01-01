@@ -48,10 +48,23 @@ def random_crop_in_roi(image, roi, left_top_of_roi):
     else:
         x_random_crop = int(left_top_of_roi[0] + random_coord)
         y_random_crop = left_top_of_roi[1]
-    crop_rect = tf.convert_to_tensor(value=[x_random_crop, y_random_crop, shorter_border, shorter_border], dtype=tf.dtypes.uint8)
+    crop_rect = tf.convert_to_tensor(value=[x_random_crop, y_random_crop, shorter_border, shorter_border], dtype=tf.dtypes.int32)
     cropped_image = tf.image.crop_to_bounding_box(image=image,
                                                   offset_height=y_random_crop,
                                                   offset_width=x_random_crop,
                                                   target_height=shorter_border,
                                                   target_width=shorter_border)
     return crop_rect, cropped_image
+
+
+def point_in_rect(point_x, point_y, rect):
+    # rect : (x, y, w, h)
+    xmin = rect[0]
+    ymin = rect[1]
+    xmax = xmin + rect[2]
+    ymax = ymin + rect[3]
+    if xmin <= point_x <= xmax and ymin <= point_y <= ymax:
+        is_point_in_rect = True
+    else:
+        is_point_in_rect = False
+    return is_point_in_rect

@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from utils.tools import read_image, random_crop_and_resize_image
+from utils.tools import read_image, random_crop_and_resize_image, point_in_rect
 
 
 class GroundTruth(object):
@@ -36,6 +36,13 @@ class GroundTruth(object):
         for item in self.batch_keypoints_list:
             image, keypoints_3d, keypoints_3d_exist = self.__get_one_human_instance_keypoints(line_keypoints=item)
             target, target_weight = self.__generate_target(keypoints_3d.numpy(), keypoints_3d_exist.numpy())
+            batch_images.append(image)
+            batch_target.append(target)
+            batch_target_weight.append(target_weight)
+        batch_images_tensor = tf.stack(values=batch_images, axis=0)  # (batch_size, image_height, image_width, channels)
+        batch_target_tensor = tf.stack(values=batch_target, axis=0)    # (batch_size, heatmap_height, heatmap_width, num_of_joints)
+        batch_target_weight_tensor = tf.stack(values=batch_target_weight, axis=0)  # (batch_size, num_of_joints, 1)
+        return batch_images_tensor, batch_target_tensor, batch_target_weight_tensor
 
     def __get_one_human_instance_keypoints(self, line_keypoints):
         line_keypoints = line_keypoints.strip()
@@ -45,18 +52,39 @@ class GroundTruth(object):
         image_width = int(float(split_line[2]))
         _, bbox = self.__convert_string_to_float_and_int(split_line[3:7])
         keypoints, _ = self.__convert_string_to_float_and_int(split_line[7:])
-
-        image_tensor, keypoints = self.__image_and_keypoints_process(image_file, keypoints, bbox)
         keypoints_tensor = tf.convert_to_tensor(value=keypoints, dtype=tf.dtypes.float32)
         keypoints_tensor = tf.reshape(keypoints_tensor, shape=(-1, 3))
+
+        image_tensor, keypoints_tensor = self.__image_and_keypoints_process(image_file, keypoints_tensor, bbox)
+
         keypoints_3d, keypoints_3d_exist = self.__get_keypoints_3d(keypoints_tensor)
         return image_tensor, keypoints_3d, keypoints_3d_exist
 
     def __image_and_keypoints_process(self, image_dir, keypoints, bbox):
         image_tensor = read_image(image_dir, self.config_params)
         resized_image, resize_ratio, crop_rect = random_crop_and_resize_image(image_tensor, bbox, self.image_size[0], self.image_size[1])
+        # Change the keypoints according to the resize_ratio and crop_rect.
+        keypoints = self.__change_keypoints(resize_ratio, crop_rect, keypoints)
+        return resized_image, keypoints
 
-        return image_tensor, keypoints
+    def __change_keypoints(self, resize_ratio, crop_rect, keypoints):
+        crop_rect = crop_rect.numpy()
+        keypoints = keypoints.numpy()
+        # First determine whether the point is inside the crop area.
+        for i in range(self.num_of_joints):
+            if not point_in_rect(point_x=keypoints[i, 0], point_y=keypoints[i, 1], rect=crop_rect):
+                keypoints[i, 2] = 0.0
+
+        for i in range(self.num_of_joints):
+            if keypoints[i, 2] > 0.0:
+                # Calculate the coordinates of the keypoints after cropping the original picture.
+                keypoints[i, 0] = keypoints[i, 0] - crop_rect[0]
+                keypoints[i, 1] = keypoints[i, 1] - crop_rect[1]
+                # Calculate the coordinates of the keypoints after resizing.
+                keypoints[i, 0] = int(keypoints[i, 0] * resize_ratio)
+                keypoints[i, 1] = int(keypoints[i, 1] * resize_ratio)
+        keypoints = tf.convert_to_tensor(value=keypoints, dtype=tf.dtypes.float32)
+        return keypoints
 
 
     def __get_keypoints_3d(self, keypoints_tensor):
