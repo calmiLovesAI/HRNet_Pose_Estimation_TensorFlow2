@@ -53,11 +53,18 @@ class COCO_keypoints(object):
         image_id_list = []
         bbox_list = []
         for annotation in annotations:
-            keypoints_list.append(annotation["keypoints"])
-            image_id_list.append(annotation["image_id"])
-            bbox_list.append(annotation["bbox"])
+            bbox = annotation["bbox"]
+            if self.__is_bbox_valid(bbox):
+                keypoints_list.append(annotation["keypoints"])
+                image_id_list.append(annotation["image_id"])
+                bbox_list.append(bbox)
         return keypoints_list, image_id_list, bbox_list
 
+    def __is_bbox_valid(self, bbox):
+        for item in bbox:
+            if item <= 0:
+                return False
+        return True
 
     def __creat_dict_from_list(self, list_data):
         created_dict = {}
