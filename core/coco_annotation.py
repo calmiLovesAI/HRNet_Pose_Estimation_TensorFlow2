@@ -61,9 +61,9 @@ class COCO_keypoints(object):
         return keypoints_list, image_id_list, bbox_list
 
     def __is_bbox_valid(self, bbox):
-        for item in bbox:
-            if item <= 0:
-                return False
+        x, y, w, h = bbox
+        if x <= 0 or y <= 0 or w < 1 or h < 1:
+            return False
         return True
 
     def __creat_dict_from_list(self, list_data):
