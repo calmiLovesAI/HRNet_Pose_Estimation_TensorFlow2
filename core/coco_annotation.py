@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import time
 from configuration.base_config import Config
+import numpy as np
 
 
 # keypoints: ['nose', 'left_eye', 'right_eye', 'left_ear', 'right_ear', 'left_shoulder', 'right_shoulder',
@@ -53,18 +54,21 @@ class COCO_keypoints(object):
         image_id_list = []
         bbox_list = []
         for annotation in annotations:
-            bbox = annotation["bbox"]
-            if self.__is_bbox_valid(bbox):
-                keypoints_list.append(annotation["keypoints"])
-                image_id_list.append(annotation["image_id"])
-                bbox_list.append(bbox)
+            # if self.__is_bbox_valid(bbox):
+            keypoints_list.append(annotation["keypoints"])
+            image_id_list.append(annotation["image_id"])
+            bbox_list.append(annotation["bbox"])
         return keypoints_list, image_id_list, bbox_list
 
-    def __is_bbox_valid(self, bbox):
+    def __generate_valid_bbox(self, bbox, width, height):
         x, y, w, h = bbox
-        if x <= 0 or y <= 0 or w < 1 or h < 1:
-            return False
-        return True
+        x1 = np.max((0, x))
+        y1 = np.max((0, y))
+        x2 = np.min((width - 1, x1 + np.max((0, w - 1))))
+        y2 = np.min((height - 1, y1 + np.max((0, h - 1))))
+        if w * h > 0 and x2 >= x1 and y2 >= y1:
+            bbox = [x1, y1, x2 - x1, y2 - y1]
+        return bbox
 
     def __creat_dict_from_list(self, list_data):
         created_dict = {}
@@ -114,15 +118,11 @@ class COCO_keypoints(object):
                 one_human_instance_info += self.__get_the_path_of_picture(image_files[image_index]) + " "
                 one_human_instance_info += str(image_heights[image_index]) + " "
                 one_human_instance_info += str(image_widths[image_index]) + " "
-                one_human_instance_info += self.__list_to_str(bboxes[i]) + " "
+                one_human_instance_info += self.__list_to_str(self.__generate_valid_bbox(bboxes[i],
+                                                                                         width=image_widths[image_index],
+                                                                                         height=image_heights[image_index])) + " "
                 one_human_instance_info += self.__list_to_str(keypoints_list[i])
                 one_human_instance_info = one_human_instance_info.strip()
                 one_human_instance_info += "\n"
                 print("Writing information of image-{} to {}".format(image_files[image_index], txt_file))
                 f.write(one_human_instance_info)
-
-
-
-
-
-

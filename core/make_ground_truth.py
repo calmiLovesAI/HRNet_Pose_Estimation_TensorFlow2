@@ -86,7 +86,6 @@ class GroundTruth(object):
         keypoints = tf.convert_to_tensor(value=keypoints, dtype=tf.dtypes.float32)
         return keypoints
 
-
     def __get_keypoints_3d(self, keypoints_tensor):
         keypoints_3d_list = []
         keypoints_3d_exist_list = []
