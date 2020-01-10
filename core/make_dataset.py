@@ -19,6 +19,6 @@ class CocoDataset(object):
 
     def generate_dataset(self):
         dataset = tf.data.TextLineDataset(filenames=self.data_dir)
-        dataset = dataset.batch(batch_size=self.config_params.BATCH_SIZE)
         dataset_length = self.__get_length_of_dataset(dataset)
+        dataset = dataset.batch(batch_size=self.config_params.BATCH_SIZE)
         return dataset, dataset_length
