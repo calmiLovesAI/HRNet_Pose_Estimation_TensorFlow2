@@ -55,7 +55,7 @@ if __name__ == '__main__':
     for epoch in range(start_epoch + 1, cfg.EPOCHS):
         for step, batch_data in enumerate(dataset):
             train_step(batch_data)
-            print("Epoch: {}/{}, step: {}/{}, loss: {:.5f}, accuracy: {:.5f}".format(epoch,
+            print("Epoch: {}/{}, step: {}/{}, loss: {:.10f}, accuracy: {:.5f}".format(epoch,
                                                                                      cfg.EPOCHS,
                                                                                      step,
                                                                                      tf.math.ceil(dataset_length / cfg.BATCH_SIZE),
