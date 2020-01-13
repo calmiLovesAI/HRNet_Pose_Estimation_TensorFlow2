@@ -64,6 +64,8 @@ class Config(object):
 
     # test
     TEST_PICTURES_DIRS = ["./experiment/test_image_1.jpg", "./experiment/test_image_2.jpg"]
+    TEST_DURING_TRAINING = True
+    SAVE_TEST_RESULTS_DIR = "./experiment/"
 
 
 

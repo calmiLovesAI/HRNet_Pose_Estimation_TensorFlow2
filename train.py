@@ -4,6 +4,7 @@ from core.loss import JointsMSELoss
 from core.make_dataset import CocoDataset
 from core.make_ground_truth import GroundTruth
 from core.metric import PCK
+from test import test_during_training
 from utils.work_flow import get_model, print_model_summary
 from configuration.base_config import Config
 from utils.tools import get_config_params
@@ -53,6 +54,8 @@ if __name__ == '__main__':
                                                                                      tf.math.ceil(dataset_length / cfg.BATCH_SIZE),
                                                                                      loss_metric.result(),
                                                                                      accuracy_metric.result()))
+        if cfg.TEST_DURING_TRAINING:
+            test_during_training(cfg=cfg, epoch=epoch, model=hrnet)
         loss_metric.reset_states()
         accuracy_metric.reset_states()
 

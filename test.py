@@ -1,11 +1,11 @@
 import tensorflow as tf
 import cv2
+from pathlib import Path
 
 from configuration.base_config import Config
 from utils.tools import get_config_params
 from utils.transforms import read_image
 from utils.work_flow import get_model, print_model_summary, inference
-
 
 
 def image_preprocess(cfg, picture_dir):
@@ -18,6 +18,14 @@ def image_preprocess(cfg, picture_dir):
     else:
         raise ValueError("Invalid TRANSFORM_METHOD.")
     return resized_image
+
+
+def test_during_training(cfg, epoch, model):
+    for image_dir in cfg.TEST_PICTURES_DIRS:
+        image_path = Path(image_dir)
+        resized_image = image_preprocess(cfg, image_dir)
+        image = inference(cfg=cfg, image_tensor=resized_image, model=model, image_dir=image_dir)
+        cv2.imwrite(filename=cfg.SAVE_TEST_RESULTS_DIR + "epoch-{}-{}".format(epoch, image_path.name), img=image)
 
 
 if __name__ == '__main__':
