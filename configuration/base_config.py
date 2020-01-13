@@ -37,8 +37,12 @@ class StageParams(object):
 
 
 class Config(object):
+    # train
     BATCH_SIZE = 8
     EPOCHS = 50
+    LOAD_WEIGHTS_BEFORE_TRAINING = False
+    LOAD_WEIGHTS_FROM_EPOCH = 0
+
     TRAINING_CONFIG_NAME = "coco_w32_256x192"
 
     # input image

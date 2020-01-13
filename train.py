@@ -45,7 +45,14 @@ if __name__ == '__main__':
         _, avg_accuracy, _, _ = pck(network_output=y_pred, target=target)
         accuracy_metric.update_state(values=avg_accuracy)
 
-    for epoch in range(cfg.EPOCHS):
+    start_epoch = cfg.LOAD_WEIGHTS_FROM_EPOCH
+    if cfg.LOAD_WEIGHTS_BEFORE_TRAINING:
+        hrnet.load_weights(filepath=cfg.save_weights_dir + "epoch-{}".format(start_epoch))
+        print("Successfully load weights!")
+    else:
+        start_epoch = -1
+
+    for epoch in range(start_epoch + 1, cfg.EPOCHS):
         for step, batch_data in enumerate(dataset):
             train_step(batch_data)
             print("Epoch: {}/{}, step: {}/{}, loss: {:.5f}, accuracy: {:.5f}".format(epoch,
