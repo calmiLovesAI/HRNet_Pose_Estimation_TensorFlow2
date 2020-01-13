@@ -54,6 +54,8 @@ if __name__ == '__main__':
                                                                                      tf.math.ceil(dataset_length / cfg.BATCH_SIZE),
                                                                                      loss_metric.result(),
                                                                                      accuracy_metric.result()))
+        if epoch % cfg.SAVE_FREQUENCY == 0:
+            hrnet.save_weights(filepath=cfg.save_weights_dir + "epoch-{}".format(epoch), save_format="tf")
         if cfg.TEST_DURING_TRAINING:
             test_during_training(cfg=cfg, epoch=epoch, model=hrnet)
         loss_metric.reset_states()

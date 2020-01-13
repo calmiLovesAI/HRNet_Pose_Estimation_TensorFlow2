@@ -61,6 +61,7 @@ class Config(object):
 
     # save model
     save_weights_dir = "saved_model/weights/"
+    SAVE_FREQUENCY = 5
 
     # test
     TEST_PICTURES_DIRS = ["", ""]  # "./experiment/xxx.jpg"
