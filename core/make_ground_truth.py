@@ -57,9 +57,9 @@ class GroundTruth(object):
         keypoints_tensor = tf.reshape(keypoints_tensor, shape=(-1, 3))
 
         # Resize the image, and change the coordinates of the keypoints accordingly.
-        image_tensor, keypoints_tensor = self.__image_and_keypoints_process(image_file, keypoints_tensor, bbox)
+        image_tensor, keypoints = self.__image_and_keypoints_process(image_file, keypoints_tensor, bbox)
 
-        keypoints_3d, keypoints_3d_exist = self.__get_keypoints_3d(keypoints_tensor)
+        keypoints_3d, keypoints_3d_exist = self.__get_keypoints_3d(keypoints)
         return image_tensor, keypoints_3d, keypoints_3d_exist
 
     def __image_and_keypoints_process(self, image_dir, keypoints, bbox):
@@ -77,12 +77,12 @@ class GroundTruth(object):
         else:
             raise ValueError("Invalid TRANSFORM_METHOD.")
 
-    def __get_keypoints_3d(self, keypoints_tensor):
+    def __get_keypoints_3d(self, keypoints):
         keypoints_3d_list = []
         keypoints_3d_exist_list = []
         for i in range(self.num_of_joints):
-            keypoints_3d_list.append(tf.convert_to_tensor([keypoints_tensor[i, 0], keypoints_tensor[i, 1], 0], dtype=tf.dtypes.float32))
-            exist_value = keypoints_tensor[i, 2]
+            keypoints_3d_list.append(tf.convert_to_tensor([keypoints[i, 0], keypoints[i, 1], 0], dtype=tf.dtypes.float32))
+            exist_value = keypoints[i, 2]
             if exist_value > 1:
                 exist_value = 1
             keypoints_3d_exist_list.append(tf.convert_to_tensor([exist_value, exist_value, 0], dtype=tf.dtypes.float32))
