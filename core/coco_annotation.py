@@ -125,9 +125,7 @@ class COCO_keypoints(object):
                 one_human_instance_info += self.__get_the_path_of_picture(image_files[image_index]) + " "
                 one_human_instance_info += str(image_heights[image_index]) + " "
                 one_human_instance_info += str(image_widths[image_index]) + " "
-                one_human_instance_info += self.__list_to_str(self.__generate_valid_bbox(bboxes[i],
-                                                                                         width=image_widths[image_index],
-                                                                                         height=image_heights[image_index])) + " "
+                one_human_instance_info += self.__list_to_str(bboxes[i]) + " "
                 one_human_instance_info += self.__list_to_str(keypoints_list[i])
                 one_human_instance_info = one_human_instance_info.strip()
                 one_human_instance_info += "\n"
