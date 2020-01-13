@@ -63,11 +63,9 @@ class Config(object):
     save_weights_dir = "saved_model/weights/"
 
     # test
-    TEST_PICTURES_DIRS = ["./experiment/test_image_1.jpg", "./experiment/test_image_2.jpg"]
+    TEST_PICTURES_DIRS = ["", ""]  # "./experiment/xxx.jpg"
     TEST_DURING_TRAINING = True
     SAVE_TEST_RESULTS_DIR = "./experiment/"
-
-
 
     def __init__(self):
         pass
