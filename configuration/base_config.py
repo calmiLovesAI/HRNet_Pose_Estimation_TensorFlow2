@@ -51,6 +51,8 @@ class Config(object):
     HEATMAP_HEIGHT = 64
     SIGMA = 2
 
+    TRANSFORM_METHOD = "resize"   # random_crop, resize
+
     # dataset
     COCO_ROOT_DIR = "./dataset/COCO/2017/"
     COCO_TRAIN_TXT = "./coco_train.txt"

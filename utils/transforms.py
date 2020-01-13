@@ -92,3 +92,35 @@ class RandomCropTransform(object):
 
     def keypoints_to_original(self):
         raise NotImplementedError("The method has not been implemented.")
+
+
+class ResizeTransform(object):
+    def __init__(self, image, keypoints, bbox, resize_h, resize_w, num_of_joints):
+        self.image = image
+        self.keypoints = keypoints
+        self.bbox = bbox
+        self.resize_h = resize_h
+        self.resize_w = resize_w
+        self.num_of_joints = num_of_joints
+
+    def image_transform(self):
+        human_instance = tf.image.crop_to_bounding_box(image=self.image,
+                                                       offset_height=self.bbox[1],
+                                                       offset_width=self.bbox[0],
+                                                       target_height=self.bbox[3],
+                                                       target_width=self.bbox[2])
+        resize_ratio = [self.resize_h / human_instance.shape[0], self.resize_w / human_instance.shape[1]]
+        resized_image = tf.image.resize(images=human_instance, size=[self.resize_h, self.resize_w])
+        return resized_image, resize_ratio
+
+    def keypoints_transform(self, resize_ratio):
+        transformed_keypoints = self.keypoints.numpy()
+        for i in range(self.num_of_joints):
+            if transformed_keypoints[i, 2] > 0.0:
+                transformed_keypoints[i, 0] = int(transformed_keypoints[i, 0] * resize_ratio[1])
+                transformed_keypoints[i, 1] = int(transformed_keypoints[i, 1] * resize_ratio[0])
+        return transformed_keypoints
+
+    def keypoints_to_original(self):
+        raise NotImplementedError("The method has not been implemented.")
+

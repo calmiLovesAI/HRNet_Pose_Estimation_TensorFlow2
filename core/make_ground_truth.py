@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from utils.transforms import read_image, RandomCropTransform
+from utils.transforms import read_image, RandomCropTransform, ResizeTransform
 
 
 class GroundTruth(object):
@@ -11,6 +11,7 @@ class GroundTruth(object):
         self.image_size = np.array([config_params.IMAGE_HEIGHT, config_params.IMAGE_WIDTH])
         self.heatmap_size = np.array([config_params.HEATMAP_HEIGHT, config_params.HEATMAP_WIDTH])
         self.sigma = config_params.SIGMA
+        self.transform_method = config_params.TRANSFORM_METHOD
 
     def __tensor2list(self, tensor_data):
         list_data = []
@@ -63,10 +64,18 @@ class GroundTruth(object):
 
     def __image_and_keypoints_process(self, image_dir, keypoints, bbox):
         image_tensor = read_image(image_dir, self.config_params)
-        transform = RandomCropTransform(image=image_tensor, keypoints=keypoints, bbox=bbox, resize_h=self.image_size[0], resize_w=self.image_size[1], num_of_joints=self.num_of_joints)
-        resized_image, resize_ratio, crop_rect = transform.image_transform()
-        keypoints = transform.keypoints_transform(resize_ratio, crop_rect)
-        return resized_image, keypoints
+        if self.transform_method == "random crop":
+            transform = RandomCropTransform(image=image_tensor, keypoints=keypoints, bbox=bbox, resize_h=self.image_size[0], resize_w=self.image_size[1], num_of_joints=self.num_of_joints)
+            resized_image, resize_ratio, crop_rect = transform.image_transform()
+            keypoints = transform.keypoints_transform(resize_ratio, crop_rect)
+            return resized_image, keypoints
+        elif self.transform_method == "resize":
+            transform = ResizeTransform(image=image_tensor, keypoints=keypoints, bbox=bbox, resize_h=self.image_size[0], resize_w=self.image_size[1], num_of_joints=self.num_of_joints)
+            resized_image, resize_ratio = transform.image_transform()
+            keypoints = transform.keypoints_transform(resize_ratio)
+            return resized_image, keypoints
+        else:
+            raise ValueError("Invalid TRANSFORM_METHOD.")
 
     def __get_keypoints_3d(self, keypoints_tensor):
         keypoints_3d_list = []
