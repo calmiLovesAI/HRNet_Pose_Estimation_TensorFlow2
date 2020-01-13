@@ -54,21 +54,28 @@ class COCO_keypoints(object):
         image_id_list = []
         bbox_list = []
         for annotation in annotations:
-            # if self.__is_bbox_valid(bbox):
-            keypoints_list.append(annotation["keypoints"])
-            image_id_list.append(annotation["image_id"])
-            bbox_list.append(annotation["bbox"])
+            bbox = annotation["bbox"]
+            if self.__is_bbox_valid(bbox):
+                keypoints_list.append(annotation["keypoints"])
+                image_id_list.append(annotation["image_id"])
+                bbox_list.append(bbox)
         return keypoints_list, image_id_list, bbox_list
 
-    def __generate_valid_bbox(self, bbox, width, height):
+    def __is_bbox_valid(self, bbox):
         x, y, w, h = bbox
-        x1 = np.max((0, x))
-        y1 = np.max((0, y))
-        x2 = np.min((width - 1, x1 + np.max((0, w - 1))))
-        y2 = np.min((height - 1, y1 + np.max((0, h - 1))))
-        if w * h > 0 and x2 >= x1 and y2 >= y1:
-            bbox = [x1, y1, x2 - x1, y2 - y1]
-        return bbox
+        if int(w) > 0 and int(h) > 0 and int(x) >= 0 and int(y) >= 0:
+            return True
+        return False
+    
+    # def __generate_valid_bbox(self, bbox, width, height):
+    #     x, y, w, h = bbox
+    #     x1 = np.max((0, x))
+    #     y1 = np.max((0, y))
+    #     x2 = np.min((width - 1, x1 + np.max((0, w - 1))))
+    #     y2 = np.min((height - 1, y1 + np.max((0, h - 1))))
+    #     if w * h > 0 and x2 >= x1 and y2 >= y1:
+    #         bbox = [x1, y1, x2 - x1, y2 - y1]
+    #     return bbox
 
     def __creat_dict_from_list(self, list_data):
         created_dict = {}
