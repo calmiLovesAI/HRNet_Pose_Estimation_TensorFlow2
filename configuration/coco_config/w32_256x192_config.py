@@ -7,6 +7,8 @@ class CocoW32Size256x192(Config):
         super(CocoW32Size256x192, self).__init__()
         self.num_of_joints = 17
         self.conv3_kernel = 3
+        self.SKELETON = [[16, 14], [14, 12], [17, 15], [15, 13], [12, 13], [6, 12], [7, 13], [6, 7], [6, 8], [7, 9], [8, 10], [9, 11], [2, 3], [1, 2], [1, 3], [2, 4], [3, 5], [4, 6], [5, 7]]
+
         self.stage_2 = StageParams(channels=[32, 64], modules=1, block="BASIC", num_blocks=[4, 4], fusion_method="sum")
         self.stage_3 = StageParams(channels=[32, 64, 128], modules=4, block="BASIC", num_blocks=[4, 4, 4], fusion_method="sum")
         self.stage_4 = StageParams(channels=[32, 64, 128, 256], modules=3, block="BASIC", num_blocks=[4, 4, 4, 4], fusion_method="sum")

@@ -89,8 +89,6 @@ class RandomCropTransform(object):
                                                       target_width=shorter_border)
         return crop_rect, cropped_image
 
-    def keypoints_to_original(self):
-        raise NotImplementedError("The method has not been implemented.")
 
 
 class ResizeTransform(object):
@@ -121,6 +119,5 @@ class ResizeTransform(object):
                 transformed_keypoints[i, 1] = int((transformed_keypoints[i, 1] - left_top[1]) * resize_ratio[0])
         return transformed_keypoints
 
-    def keypoints_to_original(self):
-        raise NotImplementedError("The method has not been implemented.")
+
 

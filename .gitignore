@@ -6,4 +6,5 @@ coco_train.txt
 coco_valid.txt
 /saved_model/weights/*
 !/saved_model/weights/README.md
-/test.py
+/experiment/*
+!/experiment/README.md
