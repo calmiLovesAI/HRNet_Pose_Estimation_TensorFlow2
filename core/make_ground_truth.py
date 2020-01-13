@@ -71,8 +71,8 @@ class GroundTruth(object):
             return resized_image, keypoints
         elif self.transform_method == "resize":
             transform = ResizeTransform(image=image_tensor, keypoints=keypoints, bbox=bbox, resize_h=self.image_size[0], resize_w=self.image_size[1], num_of_joints=self.num_of_joints)
-            resized_image, resize_ratio = transform.image_transform()
-            keypoints = transform.keypoints_transform(resize_ratio)
+            resized_image, resize_ratio, left_top = transform.image_transform()
+            keypoints = transform.keypoints_transform(resize_ratio, left_top)
             return resized_image, keypoints
         else:
             raise ValueError("Invalid TRANSFORM_METHOD.")

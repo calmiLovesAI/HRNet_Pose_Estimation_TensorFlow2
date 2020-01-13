@@ -108,16 +108,17 @@ class ResizeTransform(object):
                                                        offset_width=self.bbox[0],
                                                        target_height=self.bbox[3],
                                                        target_width=self.bbox[2])
+        left_top_of_human_instance = self.bbox[0:2]
         resize_ratio = [self.resize_h / human_instance.shape[0], self.resize_w / human_instance.shape[1]]
         resized_image = tf.image.resize(images=human_instance, size=[self.resize_h, self.resize_w])
-        return resized_image, resize_ratio
+        return resized_image, resize_ratio, left_top_of_human_instance
 
-    def keypoints_transform(self, resize_ratio):
+    def keypoints_transform(self, resize_ratio, left_top):
         transformed_keypoints = self.keypoints.numpy()
         for i in range(self.num_of_joints):
             if transformed_keypoints[i, 2] > 0.0:
-                transformed_keypoints[i, 0] = int(transformed_keypoints[i, 0] * resize_ratio[1])
-                transformed_keypoints[i, 1] = int(transformed_keypoints[i, 1] * resize_ratio[0])
+                transformed_keypoints[i, 0] = int((transformed_keypoints[i, 0] - left_top[0]) * resize_ratio[1])
+                transformed_keypoints[i, 1] = int((transformed_keypoints[i, 1] - left_top[1]) * resize_ratio[0])
         return transformed_keypoints
 
     def keypoints_to_original(self):
