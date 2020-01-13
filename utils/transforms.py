@@ -62,7 +62,6 @@ class RandomCropTransform(object):
                 # Calculate the coordinates of the keypoints after resizing.
                 transformed_keypoints[i, 0] = int(transformed_keypoints[i, 0] * resize_ratio)
                 transformed_keypoints[i, 1] = int(transformed_keypoints[i, 1] * resize_ratio)
-        # transformed_keypoints = tf.convert_to_tensor(value=transformed_keypoints, dtype=tf.dtypes.float32)
         return transformed_keypoints
 
     def __random_crop_in_roi(self, image, roi, left_top_of_roi):
