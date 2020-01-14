@@ -65,10 +65,11 @@ class GroundTruth(object):
     def __image_and_keypoints_process(self, image_dir, keypoints, bbox):
         image_tensor = read_image(image_dir, self.config_params)
         if self.transform_method == "random crop":
-            transform = RandomCropTransform(image=image_tensor, keypoints=keypoints, bbox=bbox, resize_h=self.image_size[0], resize_w=self.image_size[1], num_of_joints=self.num_of_joints)
-            resized_image, resize_ratio, crop_rect = transform.image_transform()
-            keypoints = transform.keypoints_transform(resize_ratio, crop_rect)
-            return resized_image, keypoints
+            raise NotImplementedError("Not available temporarily.")
+            # transform = RandomCropTransform(image=image_tensor, keypoints=keypoints, bbox=bbox, resize_h=self.image_size[0], resize_w=self.image_size[1], num_of_joints=self.num_of_joints)
+            # resized_image, resize_ratio, crop_rect = transform.image_transform()
+            # keypoints = transform.keypoints_transform(resize_ratio, crop_rect)
+            # return resized_image, keypoints
         elif self.transform_method == "resize":
             transform = ResizeTransform(image=image_tensor, keypoints=keypoints, bbox=bbox, resize_h=self.image_size[0], resize_w=self.image_size[1], num_of_joints=self.num_of_joints)
             resized_image, resize_ratio, left_top = transform.image_transform()

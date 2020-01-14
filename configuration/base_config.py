@@ -72,5 +72,19 @@ class Config(object):
     TEST_DURING_TRAINING = True
     SAVE_TEST_RESULTS_DIR = "./experiment/"
 
+    # color (r, g, b)
+    DYE_VAT = {"Pink": (255, 192, 203), "MediumVioletRed": (199, 21, 133), "Magenta": (255, 0, 255),
+               "Purple": (128, 0, 128), "Blue": (0, 0, 255), "LightSkyBlue": (135, 206, 250),
+               "Cyan": (0, 255, 255), "LightGreen": (144, 238, 144), "Green": (0, 128, 0),
+               "Yellow": (255, 255, 0), "Gold": (255, 215, 0), "Orange": (255, 165, 0),
+               "Red": (255, 0, 0), "LightCoral": (240, 128, 128), "DarkGray": (169, 169, 169)}
+
     def __init__(self):
-        pass
+        self.DYE_VAT_BGR = self.__from_rgb_to_bgr(color_dict=self.DYE_VAT)
+
+    def __from_rgb_to_bgr(self, color_dict):
+        bgr_color = {}
+        for k, v in color_dict.items():
+            r, g, b = v[0], v[1], v[2]
+            bgr_color[k] = (b, g, r)
+        return bgr_color

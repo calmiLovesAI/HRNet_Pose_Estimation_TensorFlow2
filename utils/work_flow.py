@@ -44,10 +44,6 @@ def get_final_preds(batch_heatmaps):
     preds, maxval = get_max_preds(batch_heatmaps)
     num_of_joints = preds.shape[-1]
     batch_size = preds.shape[0]
-    # print(preds.shape, preds.dtype)   # (1, 2, 17) float32
-    # print(maxval.shape, maxval.dtype)   # (1, 1, 17) float32
-    # heatmap_height = batch_heatmaps.shape[1]
-    # heatmap_width = batch_heatmaps.shape[2]
     batch_x = []
     batch_y = []
     for b in range(batch_size):
@@ -68,14 +64,14 @@ def draw_on_image(cfg, image, x, y, rescale):
     for j in range(len(x)):
         x_coord, y_coord = rescale(x=x[j], y=y[j])
         keypoints_coords.append([x_coord, y_coord])
-        cv2.circle(img=image, center=(x_coord, y_coord), radius=5, color=(0, 0, 255), thickness=-1)
+        cv2.circle(img=image, center=(x_coord, y_coord), radius=5, color=cfg.DYE_VAT_BGR["Red"], thickness=-1)
     # draw lines
     for i in range(len(cfg.SKELETON)):
         index_1 = cfg.SKELETON[i][0] - 1
         index_2 = cfg.SKELETON[i][1] - 1
         x1, y1 = rescale(x=x[index_1], y=y[index_1])
         x2, y2 = rescale(x=x[index_2], y=y[index_2])
-        cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2), color=(255, 0, 0), thickness=1)
+        cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2), color=cfg.DYE_VAT_BGR["Yellow"], thickness=1)
     return image
 
 
