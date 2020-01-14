@@ -1,6 +1,37 @@
 # HRNet_Pose_Estimation_TensorFlow2
 A tensorflow2 implementation of HRNet for human pose estimation.
 
+## Requirements:
++ Python == 3.7
++ TensorFlow == 2.1.0
++ numpy == 1.17.0
++ opencv-python == 4.1.0
+
+
+## Usage
+### Prepare dataset
+1. Download the COCO2017 dataset.
+2. Unzip the **train2017.zip**,  **annotations_trainval2017.zip** and place them in the 'dataset' folder, make sure the directory is like this : 
+```
+|——dataset
+    |——COCO
+        |——2017
+            |——annotations
+            |——train2017
+```
+
+### Train on COCO2017
+1. Open the file *"./configuration/base_config.py"*, change the parameters according to your needs.
+2. Run *"write_coco_to_txt.py"* to generate coco annotation files.
+3. Run *"train.py"* to train on coco2017 dataset.
+
+### Test
+1. Prepare the test pictures and make sure that the **TEST_PICTURES_DIRS** in *"./configuration/base_config.py"* is correct.
+2. Run *"test.py"* to test on your test pictures.
+
+
+
+
 
 ## Acknowledgments
 1. https://github.com/leoxiaobin/deep-high-resolution-net.pytorch
