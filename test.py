@@ -10,6 +10,7 @@ from utils.work_flow import get_model, print_model_summary, inference
 
 def image_preprocess(cfg, picture_dir):
     image_tensor = read_image(image_dir=picture_dir, cfg=cfg)
+    image_height, image_width = image_tensor.shape[0], image_tensor.shape[1]
     if cfg.TRANSFORM_METHOD == "random crop":
         raise NotImplementedError("Not implemented!")
     elif cfg.TRANSFORM_METHOD == "resize":
@@ -17,14 +18,14 @@ def image_preprocess(cfg, picture_dir):
         resized_image = tf.expand_dims(input=resized_image, axis=0)
     else:
         raise ValueError("Invalid TRANSFORM_METHOD.")
-    return resized_image
+    return resized_image, image_height, image_width
 
 
 def test_during_training(cfg, epoch, model):
     for image_dir in cfg.TEST_PICTURES_DIRS:
         image_path = Path(image_dir)
-        resized_image = image_preprocess(cfg, image_dir)
-        image = inference(cfg=cfg, image_tensor=resized_image, model=model, image_dir=image_dir)
+        resized_image, h, w = image_preprocess(cfg, image_dir)
+        image = inference(cfg=cfg, image_tensor=resized_image, model=model, image_dir=image_dir, original_image_size=[h, w])
         cv2.imwrite(filename=cfg.SAVE_TEST_RESULTS_DIR + "epoch-{}-{}".format(epoch, image_path.name), img=image)
 
 
@@ -41,8 +42,8 @@ if __name__ == '__main__':
     print_model_summary(hrnet)
 
     for image_dir in cfg.TEST_PICTURES_DIRS:
-        resized_image = image_preprocess(cfg, image_dir)
-        image = inference(cfg=cfg, image_tensor=resized_image, model=hrnet, image_dir=image_dir)
+        resized_image, h, w = image_preprocess(cfg, image_dir)
+        image = inference(cfg=cfg, image_tensor=resized_image, model=hrnet, image_dir=image_dir, original_image_size=[h, w])
         cv2.namedWindow("Pose Estimation", flags=cv2.WINDOW_NORMAL)
         cv2.imshow("Pose Estimation", image)
         cv2.waitKey(0)

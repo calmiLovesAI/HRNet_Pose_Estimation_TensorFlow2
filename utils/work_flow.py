@@ -4,6 +4,8 @@ from utils.tools import get_config_params
 import numpy as np
 import cv2
 
+from utils.transforms import KeypointsRescaleToOriginal
+
 
 def get_model(cfg):
     model = HRNet(cfg)
@@ -50,10 +52,8 @@ def get_final_preds(batch_heatmaps):
         single_image_x = []
         single_image_y = []
         for j in range(num_of_joints):
-            # hm = batch_heatmaps[b, ..., j]   # (heatmap_height, heatmap_width)
             point_x = int(preds[b, 0, j])
             point_y = int(preds[b, 1, j])
-            class_prob = np.argmax(maxval, axis=-1)
             single_image_x.append(point_x)
             single_image_y.append(point_y)
         batch_x.append(single_image_x)
@@ -61,25 +61,31 @@ def get_final_preds(batch_heatmaps):
     return batch_x, batch_y
 
 
-def draw_on_image(cfg, image, x, y):
+def draw_on_image(cfg, image, x, y, rescale):
     keypoints_coords = []
     for j in range(len(x)):
-        x_coord, y_coord = cfg.IMAGE_WIDTH * x[j], cfg.IMAGE_HEIGHT * y[j]
+        x_coord, y_coord = rescale(x=x[j], y=y[j])
         keypoints_coords.append([x_coord, y_coord])
         cv2.circle(img=image, center=(x_coord, y_coord), radius=5, color=(0, 0, 255), thickness=-1)
     # draw lines
     for i in range(len(cfg.SKELETON)):
         index_1 = cfg.SKELETON[i][0] - 1
         index_2 = cfg.SKELETON[i][1] - 1
-        x1, y1 = cfg.IMAGE_WIDTH * x[index_1], cfg.IMAGE_HEIGHT * y[index_1]
-        x2, y2 = cfg.IMAGE_WIDTH * x[index_2], cfg.IMAGE_HEIGHT * y[index_2]
+        x1, y1 = rescale(x=x[index_1], y=y[index_1])
+        x2, y2 = rescale(x=x[index_2], y=y[index_2])
+        print("x1: {}, y1: {}, x2: {}, y2: {}".format(x1, y1, x2, y2))
         cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2), color=(255, 0, 0), thickness=1)
     return image
 
 
-def inference(cfg, image_tensor, model, image_dir):
+def inference(cfg, image_tensor, model, image_dir, original_image_size):
     pred_heatmap = model(image_tensor, training=False)
+    keypoints_rescale = KeypointsRescaleToOriginal(input_image_height=cfg.IMAGE_HEIGHT,
+                                                   input_image_width=cfg.IMAGE_WIDTH,
+                                                   heatmap_h=pred_heatmap.shape[1],
+                                                   heatmap_w=pred_heatmap.shape[2],
+                                                   original_image_size=original_image_size)
     batch_x_list, batch_y_list = get_final_preds(batch_heatmaps=pred_heatmap)
     keypoints_x = batch_x_list[0]
     keypoints_y = batch_y_list[0]
-    return draw_on_image(cfg=cfg, image=cv2.imread(image_dir), x=keypoints_x, y=keypoints_y)
+    return draw_on_image(cfg=cfg, image=cv2.imread(image_dir), x=keypoints_x, y=keypoints_y, rescale=keypoints_rescale)

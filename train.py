@@ -56,11 +56,11 @@ if __name__ == '__main__':
         for step, batch_data in enumerate(dataset):
             train_step(batch_data)
             print("Epoch: {}/{}, step: {}/{}, loss: {:.10f}, accuracy: {:.5f}".format(epoch,
-                                                                                     cfg.EPOCHS,
-                                                                                     step,
-                                                                                     tf.math.ceil(dataset_length / cfg.BATCH_SIZE),
-                                                                                     loss_metric.result(),
-                                                                                     accuracy_metric.result()))
+                                                                                      cfg.EPOCHS,
+                                                                                      step,
+                                                                                      tf.math.ceil(dataset_length / cfg.BATCH_SIZE),
+                                                                                      loss_metric.result(),
+                                                                                      accuracy_metric.result()))
         if epoch % cfg.SAVE_FREQUENCY == 0:
             hrnet.save_weights(filepath=cfg.save_weights_dir + "epoch-{}".format(epoch), save_format="tf")
         if cfg.TEST_DURING_TRAINING:

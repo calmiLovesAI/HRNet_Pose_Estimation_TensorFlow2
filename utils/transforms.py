@@ -120,4 +120,17 @@ class ResizeTransform(object):
         return transformed_keypoints
 
 
+class KeypointsRescaleToOriginal(object):
+    def __init__(self, input_image_height, input_image_width, heatmap_h, heatmap_w, original_image_size):
+        self.scale_ratio = [input_image_height / heatmap_h, input_image_width / heatmap_w]
+        self.original_scale_ratio = [original_image_size[0] / input_image_height, original_image_size[1] / input_image_width]
+
+    def __scale_to_input_size(self, x, y):
+        return x * self.scale_ratio[1], y * self.scale_ratio[0]
+
+    def __call__(self, x, y):
+        temp_x, temp_y = self.__scale_to_input_size(x=x, y=y)
+        return int(temp_x * self.original_scale_ratio[1]), int(temp_y * self.original_scale_ratio[0])
+
+
 
