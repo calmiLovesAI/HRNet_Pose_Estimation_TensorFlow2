@@ -40,6 +40,7 @@ if __name__ == '__main__':
 
     hrnet = get_model(cfg)
     print_model_summary(hrnet)
+    hrnet.load_weights(filepath=cfg.save_weights_dir + "saved_model")
 
     for image_dir in cfg.TEST_PICTURES_DIRS:
         resized_image, h, w = image_preprocess(cfg, image_dir)
