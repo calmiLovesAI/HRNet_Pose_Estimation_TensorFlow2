@@ -80,11 +80,18 @@ class Config(object):
                "Red": (255, 0, 0), "LightCoral": (240, 128, 128), "DarkGray": (169, 169, 169)}
 
     def __init__(self):
-        self.DYE_VAT_BGR = self.__from_rgb_to_bgr(color_dict=self.DYE_VAT)
+        pass
 
-    def __from_rgb_to_bgr(self, color_dict):
+    def get_dye_vat_bgr(self):
         bgr_color = {}
-        for k, v in color_dict.items():
+        for k, v in self.DYE_VAT.items():
             r, g, b = v[0], v[1], v[2]
             bgr_color[k] = (b, g, r)
         return bgr_color
+
+    def color_pool(self):
+        bgr_color_dict = self.get_dye_vat_bgr()
+        bgr_color_pool = []
+        for k, v in bgr_color_dict.items():
+            bgr_color_pool.append(v)
+        return bgr_color_pool

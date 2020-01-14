@@ -2,7 +2,6 @@ import json
 from pathlib import Path
 import time
 from configuration.base_config import Config
-import numpy as np
 
 
 # keypoints: ['nose', 'left_eye', 'right_eye', 'left_ear', 'right_ear', 'left_shoulder', 'right_shoulder',
@@ -66,16 +65,6 @@ class COCO_keypoints(object):
         if int(w) > 0 and int(h) > 0 and int(x) >= 0 and int(y) >= 0:
             return True
         return False
-    
-    # def __generate_valid_bbox(self, bbox, width, height):
-    #     x, y, w, h = bbox
-    #     x1 = np.max((0, x))
-    #     y1 = np.max((0, y))
-    #     x2 = np.min((width - 1, x1 + np.max((0, w - 1))))
-    #     y2 = np.min((height - 1, y1 + np.max((0, h - 1))))
-    #     if w * h > 0 and x2 >= x1 and y2 >= y1:
-    #         bbox = [x1, y1, x2 - x1, y2 - y1]
-    #     return bbox
 
     def __creat_dict_from_list(self, list_data):
         created_dict = {}

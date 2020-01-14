@@ -64,14 +64,15 @@ def draw_on_image(cfg, image, x, y, rescale):
     for j in range(len(x)):
         x_coord, y_coord = rescale(x=x[j], y=y[j])
         keypoints_coords.append([x_coord, y_coord])
-        cv2.circle(img=image, center=(x_coord, y_coord), radius=5, color=cfg.DYE_VAT_BGR["Red"], thickness=-1)
+        cv2.circle(img=image, center=(x_coord, y_coord), radius=8, color=cfg.get_dye_vat_bgr()["Red"], thickness=2)
     # draw lines
+    color_list = cfg.color_pool()
     for i in range(len(cfg.SKELETON)):
         index_1 = cfg.SKELETON[i][0] - 1
         index_2 = cfg.SKELETON[i][1] - 1
         x1, y1 = rescale(x=x[index_1], y=y[index_1])
         x2, y2 = rescale(x=x[index_2], y=y[index_2])
-        cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2), color=cfg.DYE_VAT_BGR["Yellow"], thickness=1)
+        cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2), color=color_list[i % len(color_list)], thickness=5, lineType=cv2.LINE_AA)
     return image
 
 

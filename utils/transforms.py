@@ -90,7 +90,6 @@ class RandomCropTransform(object):
         return crop_rect, cropped_image
 
 
-
 class ResizeTransform(object):
     def __init__(self, image, keypoints, bbox, resize_h, resize_w, num_of_joints):
         self.image = image
