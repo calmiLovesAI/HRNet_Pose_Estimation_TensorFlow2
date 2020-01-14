@@ -73,7 +73,6 @@ def draw_on_image(cfg, image, x, y, rescale):
         index_2 = cfg.SKELETON[i][1] - 1
         x1, y1 = rescale(x=x[index_1], y=y[index_1])
         x2, y2 = rescale(x=x[index_2], y=y[index_2])
-        print("x1: {}, y1: {}, x2: {}, y2: {}".format(x1, y1, x2, y2))
         cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2), color=(255, 0, 0), thickness=1)
     return image
 
