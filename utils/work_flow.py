@@ -30,8 +30,8 @@ def get_max_preds(heatmap_tensor):
 
     # preds[:, 0, :] = (preds[:, 0, :]) / width
     # preds[:, 1, :] = np.floor((preds[:, 1, :]) / height)
-    preds[:, 0, :] = np.ceil((preds[:, 0, :]) / width)
-    preds[:, 1, :] = preds[:, 1, :] % width
+    preds[:, 0, :] = preds[:, 0, :] % width
+    preds[:, 1, :] = np.floor(preds[:, 1, :] / width)
 
     pred_mask = np.tile(np.greater(maxval, 0.0), (1, 2, 1))
     pred_mask = pred_mask.astype(np.float32)
