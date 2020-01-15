@@ -49,8 +49,6 @@ class GroundTruth(object):
         line_keypoints = line_keypoints.strip()
         split_line = line_keypoints.split(" ")
         image_file = split_line[0]
-        # image_height = int(float(split_line[1]))
-        # image_width = int(float(split_line[2]))
         _, bbox = self.__convert_string_to_float_and_int(split_line[3:7])
         keypoints, _ = self.__convert_string_to_float_and_int(split_line[7:])
         keypoints_tensor = tf.convert_to_tensor(value=keypoints, dtype=tf.dtypes.float32)
@@ -86,10 +84,11 @@ class GroundTruth(object):
             exist_value = keypoints[i, 2]
             if exist_value > 1:
                 exist_value = 1
+            # exist_value: (1: exist , 0: not exist)
             keypoints_3d_exist_list.append(tf.convert_to_tensor([exist_value, exist_value, 0], dtype=tf.dtypes.float32))
         
-        keypoints_3d = tf.stack(values=keypoints_3d_list, axis=0)
-        keypoints_3d_exist = tf.stack(values=keypoints_3d_exist_list, axis=0)
+        keypoints_3d = tf.stack(values=keypoints_3d_list, axis=0)  # shape: (self.num_of_joints, 3)
+        keypoints_3d_exist = tf.stack(values=keypoints_3d_exist_list, axis=0)   # shape: (self.num_of_joints, 3)
         return keypoints_3d, keypoints_3d_exist
 
     def __generate_target(self, keypoints_3d, keypoints_3d_exist):
@@ -104,7 +103,7 @@ class GroundTruth(object):
             mu_y = int(keypoints_3d[joint_id][1] / feature_stride[0] + 0.5)
             upper_left = [int(mu_x - temp_size), int(mu_y - temp_size)]
             bottom_right = [int(mu_x + temp_size + 1), int(mu_y + temp_size + 1)]
-            if upper_left[0] > self.heatmap_size[1] or upper_left[1] > self.heatmap_size[0] or bottom_right[0] < 0 or bottom_right[1] < 0:
+            if upper_left[0] >= self.heatmap_size[1] or upper_left[1] >= self.heatmap_size[0] or bottom_right[0] < 0 or bottom_right[1] < 0:
                 # Set the joint invisible.
                 target_weight[joint_id] = 0
                 continue

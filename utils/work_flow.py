@@ -28,8 +28,6 @@ def get_max_preds(heatmap_tensor):
     maxval = maxval.reshape((batch_size, 1, num_of_joints))
     preds = np.tile(index, (1, 2, 1)).astype(np.float32)
 
-    # preds[:, 0, :] = (preds[:, 0, :]) / width
-    # preds[:, 1, :] = np.floor((preds[:, 1, :]) / height)
     preds[:, 0, :] = preds[:, 0, :] % width
     preds[:, 1, :] = np.floor(preds[:, 1, :] / width)
 

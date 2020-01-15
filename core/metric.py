@@ -23,7 +23,7 @@ class PCK(object):
             if accuracy[i + 1] > 0:
                 average_accuracy += accuracy[i + 1]
                 count += 1
-        average_accuracy = average_accuracy / count if count !=0 else 0
+        average_accuracy = average_accuracy / count if count != 0 else 0
         if count != 0:
             accuracy[0] = average_accuracy
         return accuracy, average_accuracy, count, pred
