@@ -28,7 +28,8 @@ class PCK(object):
             accuracy[0] = average_accuracy
         return accuracy, average_accuracy, count, pred
 
-    def __calculate_distance(self, pred, target, normalize):
+    @staticmethod
+    def __calculate_distance(pred, target, normalize):
         pred = pred.astype(np.float32)
         target = target.astype(np.float32)
         distance = np.zeros((pred.shape[-1], pred.shape[0]))

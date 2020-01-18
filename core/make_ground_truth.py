@@ -13,14 +13,16 @@ class GroundTruth(object):
         self.sigma = config_params.SIGMA
         self.transform_method = config_params.TRANSFORM_METHOD
 
-    def __tensor2list(self, tensor_data):
+    @staticmethod
+    def __tensor2list(tensor_data):
         list_data = []
         length = tensor_data.shape[0]
         for i in range(length):
             list_data.append(bytes.decode(tensor_data[i].numpy(), encoding="utf-8"))
         return list_data
 
-    def __convert_string_to_float_and_int(self, string_list):
+    @staticmethod
+    def __convert_string_to_float_and_int(string_list):
         float_list = []
         int_list = []
         for data_string in string_list:

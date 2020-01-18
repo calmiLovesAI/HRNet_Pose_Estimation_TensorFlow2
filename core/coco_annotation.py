@@ -27,14 +27,16 @@ class COCO_keypoints(object):
         print("coco keypoints: {}".format(keypoints))
         print("coco skeleton: {}".format(skeleton))
 
-    def __load_json(self, json_file):
+    @staticmethod
+    def __load_json(json_file):
         print("Start loading {}...".format(json_file.name))
         with json_file.open(mode='r') as f:
             load_dict = json.load(f)
         print("Loading is complete!")
         return load_dict
 
-    def __get_image_information(self, data_dict):
+    @staticmethod
+    def __get_image_information(data_dict):
         images = data_dict["images"]
         image_file_list = []
         image_id_list = []
@@ -60,19 +62,22 @@ class COCO_keypoints(object):
                 bbox_list.append(bbox)
         return keypoints_list, image_id_list, bbox_list
 
-    def __is_bbox_valid(self, bbox):
+    @staticmethod
+    def __is_bbox_valid(bbox):
         x, y, w, h = bbox
         if int(w) > 0 and int(h) > 0 and int(x) >= 0 and int(y) >= 0:
             return True
         return False
 
-    def __creat_dict_from_list(self, list_data):
+    @staticmethod
+    def __creat_dict_from_list(list_data):
         created_dict = {}
         for i in range(len(list_data)):
             created_dict[list_data[i]] = i
         return created_dict
 
-    def __list_to_str(self, list_data):
+    @staticmethod
+    def __list_to_str(list_data):
         str_result = ""
         for i in list_data:
             str_result += str(i)

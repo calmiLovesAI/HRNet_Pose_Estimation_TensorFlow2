@@ -1,6 +1,5 @@
 import tensorflow as tf
 from core.resnet_module import make_bottleneck_layer, make_basic_layer
-from utils.tools import get_config_params
 
 
 class HighResolutionModule(tf.keras.layers.Layer):
@@ -22,7 +21,8 @@ class HighResolutionModule(tf.keras.layers.Layer):
             branch_layers.append(self.__make_one_branch(block, num_blocks[i], num_channels[i]))
         return branch_layers
 
-    def __make_one_branch(self, block, num_blocks, num_channels, stride=1):
+    @staticmethod
+    def __make_one_branch(block, num_blocks, num_channels, stride=1):
         if block == "BASIC":
             return make_basic_layer(filter_num=num_channels, blocks=num_blocks, stride=stride)
         elif block == "BOTTLENECK":
@@ -163,7 +163,8 @@ class HRNet(tf.keras.Model):
                                                     multi_scale_output=reset_multi_scale_output))
         return StackLayers(layers=module_list)
 
-    def __make_transition_layer(self, previous_branches_num, previous_channels, current_branches_num, current_channels):
+    @staticmethod
+    def __make_transition_layer(previous_branches_num, previous_channels, current_branches_num, current_channels):
         transition_layers = []
         for i in range(current_branches_num):
             if i < previous_branches_num:

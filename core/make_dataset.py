@@ -11,7 +11,8 @@ class CocoDataset(object):
         else:
             raise ValueError("Invalid dataset_type name!")
 
-    def __get_length_of_dataset(self, dataset):
+    @staticmethod
+    def __get_length_of_dataset(dataset):
         count = 0
         for _ in dataset:
             count += 1
